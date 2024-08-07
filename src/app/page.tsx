@@ -8,7 +8,7 @@ import { useState } from "react";
 
 export default function RandomUserPage() {
   // annotate type for users state variable
-  const [users, setUsers] = useState(null);
+  const [users, setUsers] = useState([]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [genAmount, setGenAmount] = useState(1);
