@@ -11,17 +11,28 @@ export default function RandomUserPage() {
   const [users, setUsers] = useState<UserCardProps[]>([]);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [genAmount, setGenAmount] = useState<number>(() => {
-    // Retrieve the genAmount from localStorage when the component mounts
-    const savedGenAmount = localStorage.getItem("genAmount");
-    return savedGenAmount ? parseInt(savedGenAmount, 10) : 1;
-  });
+  const [genAmount, setGenAmount] = useState<number>();
 
   useEffect(() => {
-    // Save the genAmount to localStorage whenever it changes
-    localStorage.setItem("genAmount", genAmount.toString());
-  }, [genAmount]);
+    if (typeof window !== 'undefined') {
+      const savedGenAmount = localStorage.getItem("genAmount");
+      const savedUsers = localStorage.getItem("users");
 
+      if (savedGenAmount) {
+        setGenAmount(parseInt(savedGenAmount, 10));
+      }
+
+      if (savedUsers) {
+        setUsers(JSON.parse(savedUsers));
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && genAmount !== undefined) {
+      localStorage.setItem("genAmount", genAmount.toString());
+    }
+  }, [genAmount]);
 
   const generateBtnOnClick = async () => {
     setIsLoading(true);
@@ -42,7 +53,7 @@ export default function RandomUserPage() {
           className="form-control text-center"
           style={{ maxWidth: "100px" }}
           type="number"
-          onChange={(e) => setGenAmount(parseInt(e.target.value))}
+          onChange={(e) => setGenAmount(Number(e.target.value))}
           value={genAmount}
         />
         <button className="btn btn-dark" onClick={generateBtnOnClick}>
@@ -50,7 +61,7 @@ export default function RandomUserPage() {
         </button>
       </div>
       {isLoading && <p className="display-6 text-center fst-italic my-4">Loading ...</p>}
-      {users && !isLoading && users?.map((user: any, index: number) => (
+      {users && !isLoading && users?.map((user: UserCardProps, index: number) => (
         <UserCard
           key={index}
           name={user.name}
