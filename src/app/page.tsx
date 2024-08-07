@@ -2,16 +2,26 @@
 
 import UserCard from "@/components/UserCard";
 import { cleanUser } from "@/libs/cleanUser";
-import { UserApiResponse } from "@/libs/types";
+import { UserApiResponse, UserCardProps } from "@/libs/types";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function RandomUserPage() {
   // annotate type for users state variable
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<UserCardProps[]>([]);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [genAmount, setGenAmount] = useState(1);
+  const [genAmount, setGenAmount] = useState<number>(() => {
+    // Retrieve the genAmount from localStorage when the component mounts
+    const savedGenAmount = localStorage.getItem("genAmount");
+    return savedGenAmount ? parseInt(savedGenAmount, 10) : 1;
+  });
+
+  useEffect(() => {
+    // Save the genAmount to localStorage whenever it changes
+    localStorage.setItem("genAmount", genAmount.toString());
+  }, [genAmount]);
+
 
   const generateBtnOnClick = async () => {
     setIsLoading(true);
