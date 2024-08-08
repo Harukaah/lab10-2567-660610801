@@ -1,3 +1,4 @@
+// Type definition for the API response
 export interface UserApiResponse {
     gender: string;
     name: {

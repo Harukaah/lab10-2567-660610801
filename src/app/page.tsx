@@ -13,6 +13,7 @@ export default function RandomUserPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [genAmount, setGenAmount] = useState<number>();
 
+   // Load genAmount and users from localStorage on client side only
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedGenAmount = localStorage.getItem("genAmount");
@@ -28,12 +29,21 @@ export default function RandomUserPage() {
     }
   }, []);
 
+   // Save the genAmount to localStorage whenever it changes
   useEffect(() => {
     if (typeof window !== 'undefined' && genAmount !== undefined) {
       localStorage.setItem("genAmount", genAmount.toString());
     }
   }, [genAmount]);
 
+   // Save the users to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("users", JSON.stringify(users));
+    }
+  }, [users]);
+
+   // Function to generate random users
   const generateBtnOnClick = async () => {
     setIsLoading(true);
     const resp = await axios.get(
